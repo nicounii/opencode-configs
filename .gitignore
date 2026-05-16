@@ -1,14 +1,12 @@
-# env files
-.env*
-!.env.example
+node_modules
+package.json
+package-lock.json
+bun.lock
+.gitignore
 
-# misc
-.DS_Store
-*.pem
-
-# plan
-.sisyphus/
-.archive/
-
-# ide
-.idea
+# Large binaries and data
+bin/
+context-mode/
+research/
+*.bak
+.hive/sessions.json

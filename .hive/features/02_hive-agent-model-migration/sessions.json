@@ -1,0 +1,15 @@
+{
+  "sessions": [
+    {
+      "sessionId": "ses_1ceb514d2ffeVFUlH0bah8veAw",
+      "startedAt": "2026-05-16T14:57:44.363Z",
+      "lastActiveAt": "2026-05-16T18:17:08.422Z",
+      "agent": "hive-master",
+      "sessionKind": "primary",
+      "baseAgent": "hive-master",
+      "directivePrompt": "Load the \"writting-plans\" skill, and after, the plan is created, proceed with update.",
+      "replayDirectivePending": false,
+      "featureName": "hive-agent-model-migration"
+    }
+  ]
+}

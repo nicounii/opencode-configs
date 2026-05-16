@@ -1,7 +1,5 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "github-copilot/gpt-5.4",
-  "small_model": "github-copilot/claude-haiku-4.5",
   "permission": {
     "skill": {
       "*": "allow"
@@ -31,20 +29,206 @@
     "@nick-vi/opencode-type-inject@latest",
     "opencode-with-claude@latest",
     "opencode-historian@latest",
-    "oh-my-openagent@latest"
+    "opencode-hive@latest",
+    "@_davideast/stitch-mcp@latest",
+    "opencode-antigravity-auth@latest",
+    "oh-my-opencode-slim@latest",
+    "./plugin/tokentracker.js",
+    "context-mode",
+    "opencode-agent-skills"
   ],
   "enabled_providers": [
-    "xai",
     "nvidia",
     "opencode",
     "zai-coding-plan",
-    "github-copilot"
+    "github-copilot",
+    "CLIProxyAPI",
+    "LiteLLM"
   ],
   "provider": {
     "anthropic": {
       "options": {
         "baseURL": "http://127.0.0.1:3456",
         "apiKey": "dummy"
+      }
+    },
+    "CLIProxyAPI": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "CLIProxyAPI",
+      "options": {
+        "baseURL": "http://127.0.0.1:8317/v1"
+      },
+      "models": {
+        "gemini-2.5-flash": {
+          "name": "gemini-2.5-flash",
+          "tool_call": true,
+          "options": {
+            "temperature": 1.0,
+            "top_p": 0.95
+          }
+        },
+        "gemini-2.5-flash-lite": {
+          "name": "gemini-2.5-flash-lite",
+          "tool_call": true,
+          "options": {
+            "temperature": 1.0,
+            "top_p": 0.95
+          }
+        },
+        "gemini-3-flash": {
+          "name": "gemini-3-flash",
+          "tool_call": true,
+          "options": {
+            "temperature": 1.0,
+            "top_p": 0.95
+          }
+        },
+        "gemini-3-flash-agent": {
+          "name": "gemini-3-flash-agent",
+          "tool_call": true,
+          "options": {
+            "temperature": 1.0,
+            "top_p": 0.95
+          }
+        },
+        "gemini-3.1-flash-image": {
+          "name": "gemini-3.1-flash-image",
+          "tool_call": true,
+          "options": {
+            "temperature": 1.0,
+            "top_p": 0.95
+          }
+        },
+        "gemini-3.1-flash-lite": {
+          "name": "gemini-3.1-flash-lite",
+          "tool_call": true,
+          "options": {
+            "temperature": 1.0,
+            "top_p": 0.95
+          }
+        },
+        "gemini-3.1-pro-high": {
+          "name": "gemini-3.1-pro-high",
+          "tool_call": true,
+          "options": {
+            "temperature": 1.0,
+            "top_p": 0.95
+          }
+        },
+        "gemini-3.1-pro-low": {
+          "name": "gemini-3.1-pro-low",
+          "tool_call": true,
+          "options": {
+            "temperature": 1.0,
+            "top_p": 0.95
+          }
+        },
+        "gemini-pro-agent": {
+          "name": "gemini-pro-agent",
+          "tool_call": true,
+          "options": {
+            "temperature": 1.0,
+            "top_p": 0.95
+          }
+        },
+        "gpt-oss-120b-medium": {
+          "name": "gpt-oss-120b-medium",
+          "tool_call": true,
+          "options": {
+            "temperature": 1.0,
+            "top_p": 1.0
+          }
+        },
+        "claude-sonnet-4-6": {
+          "name": "claude-sonnet-4-6",
+          "tool_call": true,
+          "options": {
+            "temperature": 0.7,
+            "top_p": 0.9
+          }
+        },
+        "claude-opus-4-6-thinking": {
+          "name": "claude-opus-4-6-thinking",
+          "tool_call": true,
+          "options": {
+            "temperature": 1.0,
+            "top_p": 0.9
+          }
+        },
+        "step-3.5-flash": {
+          "name": "step-3.5-flash",
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "reasoning": false,
+          "tool_call": true,
+          "options": {
+            "temperature": 0.5,
+            "top_p": 0.7,
+            "repeat_penalty": 1.2
+          }
+        },
+        "minimax-m2.7": {
+          "name": "minimax-m2.7",
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "reasoning": false,
+          "tool_call": true,
+          "options": {
+            "temperature": 0.7,
+            "top_p": 0.9
+          }
+        },
+        "devstral-2-123b": {
+          "name": "devstral-2-123b",
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "reasoning": false,
+          "tool_call": true,
+          "options": {
+            "temperature": 0.7,
+            "top_p": 0.9
+          }
+        }
+      }
+    },
+    "lite-llm": {
+      "npm": "@ai-sdk/litellm",
+      "options": {
+        "baseURL": "https://api.openai.com/v1"
+      },
+      "models": {
+        "nv-embed-v1": {
+          "name": "nv-embed-v1",
+          "supports_embeddings": true,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "reasoning": false,
+          "tool_call": false
+        }
       }
     },
     "opencode": {
@@ -80,9 +264,10 @@
         "minimax-m2.7",
         "minimax-m2.5",
         "kimi-k2.6",
-        "kimi-k2.5",
+        "kimi-k2.6",
         "qwen3.6-plus",
-        "qwen3.5-plus"
+        "qwen3.5-plus",
+        "gpt-5-codex"
       ]
     },
     "xai": {
@@ -106,6 +291,65 @@
     }
   },
   "mcp": {
+    "context-mode": {
+      "type": "local",
+      "command": ["context-mode"],
+      "enabled": true
+    },
+    "codebase-memory": {
+      "command": [
+        "/home/mathew/.local/bin/codebase-memory-mcp"
+      ],
+      "enabled": true,
+      "type": "local"
+    },
+    "token-savior": {
+      "command": [
+        "/home/mathew/.local/venvs/token-savior/bin/token-savior"
+      ],
+      "enabled": true,
+      "type": "local",
+      "environment": {
+        "TOKEN_SAVIOR_PROFILE": "lean"
+      }
+    },
+    "notebooklm": {
+      "command": [
+        "/home/mathew/.local/bin/notebooklm-mcp"
+      ],
+      "enabled": true,
+      "environment": {
+        "NLM_PROFILE": "default"
+      },
+      "type": "local"
+    },
+    "stitch": {
+      "type": "local",
+      "command": [
+        "npx",
+        "@_davideast/stitch-mcp",
+        "proxy"
+      ],
+      "environment": {
+        "STITCH_API_KEY": ""
+      }
+    },
+    "openspace": {
+      "command": [
+        "/home/mathew/.local/bin/openspace-mcp"
+      ],
+      "type": "local",
+      "enabled": true,
+      "toolTimeout": 1200,
+      "environment": {
+        "OPENSPACE_HOST_SKILL_DIRS": "/home/mathew/.config/opencode/skills",
+        "OPENSPACE_WORKSPACE": "/home/mathew/.config/OpenSpace",
+        "OPENSPACE_MODEL": "CLIProxyAPI/minimax-m2.7",
+        "OPENSPACE_LLM_API_KEY": "97cbd90655c240e683670322b40e55b6.9nNdg8SqC1TvNIRV",
+        "OPENSPACE_LLM_API_BASE": "http://127.0.0.1:8317/v1",
+        "OPENSPACE_API_KEY": "sk-LzZsSyr2_8_auM6jHMHNKxMCOHAo0hC67Q7_kwh1diM"
+      }
+    },
     "vision": {
       "command": [
         "npx",
@@ -120,33 +364,54 @@
       "type": "local"
     },
     "github": {
-      "enabled": false,
-      "headers": {
-        "Authorization": "Bearer {env:GITHUB_PAT_TOKEN}"
+      "command": [
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "enabled": true,
+      "environment": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "{env:GITHUB_TOKEN}"
       },
-      "type": "remote",
-      "url": "https://api.githubcopilot.com/mcp"
+      "type": "local"
     },
     "atlassian": {
       "command": [
-        "uvx",
-        "mcp-atlassian"
+        "npx",
+        "-y",
+        "@atlassian/mcp-server"
       ],
-      "enabled": false,
+      "enabled": true,
       "environment": {
-        "CONFLUENCE_API_TOKEN": "{env:CONFLUENCE_API_TOKEN}",
-        "CONFLUENCE_URL": "{env:CONFLUENCE_URL}",
-        "CONFLUENCE_USERNAME": "{env:JIRA_USERNAME}",
-        "JIRA_API_TOKEN": "{env:JIRA_API_TOKEN}",
-        "JIRA_URL": "{env:JIRA_URL}",
-        "JIRA_USERNAME": "{env:JIRA_USERNAME}"
+        "ATLASSIAN_API_KEY": "{env:ATLASSIAN_API_KEY}",
+        "ATLASSIAN_EMAIL": "{env:ATLASSIAN_EMAIL}",
+        "ATLASSIAN_SITE": "{env:ATLASSIAN_SITE}"
       },
       "type": "local"
     },
     "figma": {
-      "enabled": false,
-      "type": "remote",
-      "url": "http://127.0.0.1:3845/mcp"
+      "command": [
+        "npx",
+        "-y",
+        "@anthropic-ai/figma-mcp"
+      ],
+      "enabled": true,
+      "type": "local"
     }
-  }
+  },
+  "agent": {
+    "explore": {
+      "disable": true
+    },
+    "general": {
+      "disable": true
+    },
+    "build": {
+      "disable": true
+    },
+    "plan": {
+      "disable": true
+    }
+  },
+  "lsp": true
 }

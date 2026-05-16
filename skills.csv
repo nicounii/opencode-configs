@@ -87,4 +87,5 @@ wshobson/agents,modern-javascript-patterns,opencode
 wshobson/agents,python-packaging,opencode
 wshobson/agents,python-performance-optimization,opencode
 wshobson/agents,python-testing-patterns,opencode
-wshobson/agents,typescript-advanced-types,opencode
+wshobson/agents,typescript-advanced-types,opencodegithub/awesome-copilot,command-creator,opencode
+github/awesome-copilot,prompt-optimizer,opencode
