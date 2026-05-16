@@ -331,7 +331,7 @@
         "proxy"
       ],
       "environment": {
-        "STITCH_API_KEY": ""
+        "STITCH_API_KEY": "{env:STITCH_API_KEY}"
       }
     },
     "openspace": {
