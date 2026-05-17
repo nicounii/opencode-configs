@@ -157,56 +157,38 @@
         },
         "step-3.5-flash": {
           "name": "step-3.5-flash",
-          "modalities": {
-            "input": [
-              "text"
-            ],
-            "output": [
-              "text"
-            ]
-          },
-          "reasoning": false,
           "tool_call": true,
           "options": {
-            "temperature": 0.5,
-            "top_p": 0.7,
-            "repeat_penalty": 1.2
+            "temperature": 1.0,
+            "top_p": 0.95,
+            "frequency_penalty": 0.3
           }
         },
         "minimax-m2.7": {
           "name": "minimax-m2.7",
-          "modalities": {
-            "input": [
-              "text"
-            ],
-            "output": [
-              "text"
-            ]
-          },
-          "reasoning": false,
+          "tool_call": true,
+          "options": {
+            "temperature": 1.0,
+            "top_p": 0.95,
+            "top_k": 40
+          }
+        },
+        "trinity-large-thinking": {
+          "name": "trinity-large-thinking",
+          "tool_call": true,
+          "options": {
+            "temperature": 0.3,
+            "top_p": 0.9
+          }
+        },
+        "owl-alpha": {
+          "name": "owl-alpha",
           "tool_call": true,
           "options": {
             "temperature": 0.7,
             "top_p": 0.9
           }
         },
-        "devstral-2-123b": {
-          "name": "devstral-2-123b",
-          "modalities": {
-            "input": [
-              "text"
-            ],
-            "output": [
-              "text"
-            ]
-          },
-          "reasoning": false,
-          "tool_call": true,
-          "options": {
-            "temperature": 0.7,
-            "top_p": 0.9
-          }
-        }
       }
     },
     "lite-llm": {

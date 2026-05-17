@@ -4,12 +4,12 @@
   "sandbox": "none",
   "agents": {
     "hive-master": {
-      "model": "opencode/glm-5-free",
+      "model": "CLIProxyAPI/owl-alpha",
       "variant": "high",
       "fallback_models": [
         "opencode/deepseek-v4-flash-free",
-        "opencode/minimax-m2.5-free",
-        "opencode/qwen3.6-plus-free"
+        "opencode/qwen3.6-plus-free",
+        "opencode/nemotron-3-super-free"
       ],
       "autoLoadSkills": [
         "brainstorming",
@@ -19,11 +19,11 @@
       ]
     },
     "architect-planner": {
-      "model": "opencode/glm-5-free",
+      "model": "CLIProxyAPI/claude-opus-4-6-thinking",
       "variant": "high",
       "fallback_models": [
         "opencode/deepseek-v4-flash-free",
-        "opencode/minimax-m2.5-free",
+        "CLIProxyAPI/step-3.5-flash",
         "opencode/nemotron-3-super-free"
       ],
       "autoLoadSkills": [
@@ -32,12 +32,12 @@
       ]
     },
     "swarm-orchestrator": {
-      "model": "opencode/glm-5-free",
+      "model": "opencode/nemotron-3-super-free",
       "variant": "medium",
       "fallback_models": [
-        "opencode/minimax-m2.5-free",
-        "opencode/deepseek-v4-flash-free",
-        "opencode/nemotron-3-super-free"
+        "CLIProxyAPI/glm-4-5",
+        "CLIProxyAPI/step-3.5-flash",
+        "opencode/minimax-m2.5-free"
       ],
       "autoLoadSkills": [
         "executing-plans",
@@ -46,24 +46,24 @@
       ]
     },
     "scout-researcher": {
-      "model": "opencode/qwen3.6-plus-free",
+      "model": "opencode/deepseek-v4-flash-free",
       "variant": "medium",
       "fallback_models": [
-        "opencode/deepseek-v4-flash-free",
-        "opencode/nemotron-3-super-free",
-        "opencode/minimax-m2.5-free"
+        "CLIProxyAPI/gemini-3-flash",
+        "opencode/qwen3.6-plus-free",
+        "CLIProxyAPI/gemini-3.1-pro-low"      
       ],
       "autoLoadSkills": [
         "parallel-exploration"
       ]
     },
     "forager-worker": {
-      "model": "opencode/minimax-m2.5-free",
+      "model": "CLIProxyAPI/step-3.5-flash",
       "variant": "medium",
-      "fallback_models": [
-        "opencode/deepseek-v4-flash-free",
-        "opencode/qwen3.6-plus-free",
-        "opencode/glm-5-free"
+      "fallback_models": [ 
+        "CLIProxyAPI/glm-4.5-air",
+        "opencode/big-pickle",
+        "opencode/minimax-m2.5-free"
       ],
       "autoLoadSkills": [
         "test-driven-development",
@@ -71,19 +71,20 @@
       ]
     },
     "hive-helper": {
-      "model": "opencode/deepseek-v4-flash-free",
-      "fallback_models": [
-        "opencode/minimax-m2.5-free",
-        "opencode/qwen3.6-plus-free",
-        "opencode/nemotron-3-super-free"
+      "model": "CLIProxyAPI/claude-sonnet-4-6",
+      "variant": "low",
+      "fallback_models": [ 
+        "CLIProxyAPI/trinity-large-thinking",
+        "CLIProxyAPI/minimax-m2.7",
+        "CLIProxyAPI/gpt-oss-120b-medium"
       ]
     },
     "hygienic-reviewer": {
-      "model": "opencode/minimax-m2.5-free",
+      "model": "CLIProxyAPI/gemini-3.1-pro-high",
       "variant": "high",
       "fallback_models": [
+        "opencode/nemotron-3-super-free",
         "opencode/deepseek-v4-flash-free",
-        "opencode/glm-5-free",
         "opencode/qwen3.6-plus-free"
       ],
       "autoLoadSkills": [
