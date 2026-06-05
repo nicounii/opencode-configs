@@ -51,7 +51,46 @@ function handleSessionCreated(event, lf) {
 }
 
 function handleMessageUpdated(event, lf) {
-  // TODO: Implement message cost/token tracking
+  const info = event.properties.info;
+  if (info.role !== 'assistant') return;
+  if (!info.time?.completed) return;
+
+  const state = ACTIVE.get(info.sessionID);
+  if (!state) return;
+  if (state.generations.has(info.id)) return;
+
+  const generation = lf.generation({
+    traceId: state.traceId,
+    id: info.id,
+    name: `LLM: ${info.modelID || info.providerID}`,
+    model: info.modelID,
+    modelParameters: {
+      provider: info.providerID,
+      mode: info.mode,
+    },
+    usage: {
+      input: info.tokens?.input,
+      output: info.tokens?.output,
+      total: (info.tokens?.input || 0) + (info.tokens?.output || 0),
+    },
+    cost: info.cost,
+    startTime: new Date(info.time.created).getTime(),
+    endTime: new Date(info.time.completed).getTime(),
+    metadata: {
+      sessionID: info.sessionID,
+      finishReason: info.finish,
+      reasoningTokens: info.tokens?.reasoning,
+      cacheRead: info.tokens?.cache?.read,
+      cacheWrite: info.tokens?.cache?.write,
+    },
+    tags: ['opencode', 'llm'],
+    // Store generation client only — tool spans are tracked via session-level state.spans
+  });
+  state.generations.set(info.id, generation);
+
+  if (info.error) {
+    generation.update({ status: 'error', metadata: { ...generation.metadata, error: info.error } });
+  }
 }
 
 function handlePartUpdated(event, lf) {
@@ -91,7 +130,8 @@ function handleSessionDeleted(event, lf) {
   ACTIVE.delete(id);
 }
 
-export { handleSessionCreated, handleSessionDeleted };
+export { handleSessionCreated, handleSessionDeleted, handleMessageUpdated };
+export { ACTIVE };
 export const LangfusePlugin = async () => {
   return {
     event: async ({ event }) => {
