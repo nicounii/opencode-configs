@@ -25,18 +25,19 @@
       "venv/**"
     ]
   },
-  "plugin": [
-    "@nick-vi/opencode-type-inject@latest",
-    "opencode-with-claude@latest",
-    "opencode-historian@latest",
-    "opencode-hive@latest",
-    "@_davideast/stitch-mcp@latest",
-    "opencode-antigravity-auth@latest",
-    "oh-my-opencode-slim@latest",
-    "./plugin/tokentracker.js",
-    "context-mode",
-    "opencode-agent-skills"
-  ],
+   "plugin": [
+     "@nick-vi/opencode-type-inject@latest",
+     "opencode-with-claude@latest",
+     "opencode-historian@latest",
+     "opencode-hive@latest",
+     "@_davideast/stitch-mcp@latest",
+     "opencode-antigravity-auth@latest",
+     "oh-my-opencode-slim@latest",
+     "./plugin/tokentracker.js",
+     "./plugin/langfuse.js",
+     "context-mode",
+     "opencode-agent-skills"
+   ],
   "enabled_providers": [
     "nvidia",
     "opencode",
