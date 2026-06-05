@@ -25,7 +25,29 @@ function safe(fn) {
 }
 
 function handleSessionCreated(event, lf) {
-  // TODO: Implement session tracking
+  const { id, title, projectID, time } = event.properties.info;
+  // Guard against duplicate session.created events (e.g., resume)
+  if (ACTIVE.has(id)) return;
+
+  const trace = lf.trace({
+    id,
+    name: title || 'OpenCode Session',
+    userId: process.env.USER || process.env.USERNAME,
+    metadata: {
+      projectID,
+      source: 'opencode',
+      plugin: 'langfuse-plugin',
+    },
+    tags: ['opencode'],
+  });
+  ACTIVE.set(id, {
+    traceId: id,
+    trace,
+    generations: new Map(),
+    spans: new Map(),
+    fileChanges: [],
+    createdAt: time.created,
+  });
 }
 
 function handleMessageUpdated(event, lf) {
@@ -45,9 +67,31 @@ function handleSessionError(event, lf) {
 }
 
 function handleSessionDeleted(event, lf) {
-  // TODO: Implement session cleanup
+  const { id } = event.properties.info;
+  const state = ACTIVE.get(id);
+  if (!state) return;
+
+  const fileSummary = state.fileChanges.reduce(
+    (acc, f) => {
+      acc.totalFiles++;
+      acc.totalAdditions += f.additions;
+      acc.totalDeletions += f.deletions;
+      return acc;
+    },
+    { totalFiles: 0, totalAdditions: 0, totalDeletions: 0 }
+  );
+
+  state.trace.update({
+    metadata: {
+      ...state.trace.metadata,
+      ...fileSummary,
+      durationMs: Date.now() - state.createdAt * 1000,
+    },
+  });
+  ACTIVE.delete(id);
 }
 
+export { handleSessionCreated, handleSessionDeleted };
 export const LangfusePlugin = async () => {
   return {
     event: async ({ event }) => {
