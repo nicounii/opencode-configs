@@ -59,11 +59,23 @@ function handlePartUpdated(event, lf) {
 }
 
 function handleSessionDiff(event, lf) {
-  // TODO: Implement file change tracking
+  const state = ACTIVE.get(event.properties.sessionID);
+  if (!state) return;
+  state.fileChanges.push(...event.properties.diff);
 }
 
 function handleSessionError(event, lf) {
-  // TODO: Implement error reporting to LangFuse
+  const { sessionID, error } = event.properties;
+  if (!sessionID) return;
+  const state = ACTIVE.get(sessionID);
+  if (!state) return;
+  state.trace.update({
+    metadata: {
+      ...state.trace.metadata,
+      error: error?.name,
+      errorMessage: error?.data?.message,
+    },
+  });
 }
 
 function handleSessionDeleted(event, lf) {
@@ -91,7 +103,7 @@ function handleSessionDeleted(event, lf) {
   ACTIVE.delete(id);
 }
 
-export { handleSessionCreated, handleSessionDeleted };
+export { handleSessionCreated, handleSessionDeleted, handleSessionDiff, handleSessionError };
 export const LangfusePlugin = async () => {
   return {
     event: async ({ event }) => {

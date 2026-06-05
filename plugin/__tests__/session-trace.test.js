@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'bun:test';
-import { handleSessionCreated, handleSessionDeleted } from '../langfuse.js';
+import { handleSessionCreated, handleSessionDeleted, handleSessionDiff, handleSessionError } from '../langfuse.js';
 
 /**
  * Helper: build a fake LangFuse trace object.
@@ -122,5 +122,107 @@ describe('session trace lifecycle', () => {
     const delEvent = sessionDeletedEvent('never_created');
     // Should not throw
     expect(() => handleSessionDeleted(delEvent, lf)).not.toThrow();
+  });
+
+  /**
+   * Build a minimal session.diff event.
+   */
+  function sessionDiffEvent(sessionID, diff) {
+    return {
+      type: 'session.diff',
+      properties: { sessionID, diff },
+    };
+  }
+
+  /**
+   * Build a minimal session.error event.
+   */
+  function sessionErrorEvent(sessionID, error) {
+    return {
+      type: 'session.error',
+      properties: { sessionID, error },
+    };
+  }
+
+  describe('handleSessionDiff', () => {
+    beforeEach(() => {
+      lf = fakeClient();
+    });
+
+    it('accumulates file diffs into state.fileChanges', () => {
+      const sessionId = 'ses_diff_1';
+      handleSessionCreated(sessionCreatedEvent(sessionId), lf);
+
+      const diff1 = [
+        { file: 'a.js', additions: 10, deletions: 2 },
+        { file: 'b.js', additions: 5, deletions: 0 },
+      ];
+      handleSessionDiff(sessionDiffEvent(sessionId, diff1), lf);
+
+      const diff2 = [
+        { file: 'c.js', additions: 3, deletions: 1 },
+      ];
+      handleSessionDiff(sessionDiffEvent(sessionId, diff2), lf);
+
+      // Need to access ACTIVE state - but it's internal. We'll verify through final trace update on delete.
+      const delEvent = sessionDeletedEvent(sessionId);
+      handleSessionDeleted(delEvent, lf);
+
+      const trace = lf.traces[0];
+      expect(trace.metadata.totalFiles).toBe(3);
+      expect(trace.metadata.totalAdditions).toBe(18); // 10+5+3
+      expect(trace.metadata.totalDeletions).toBe(3); // 2+0+1
+    });
+
+    it('is a no-op when sessionID is missing', () => {
+      const event = { type: 'session.diff', properties: { diff: [] } };
+      expect(() => handleSessionDiff(event, lf)).not.toThrow();
+    });
+
+    it('is a no-op when session not found', () => {
+      const event = sessionDiffEvent('unknown_session', []);
+      expect(() => handleSessionDiff(event, lf)).not.toThrow();
+    });
+  });
+
+  describe('handleSessionError', () => {
+    beforeEach(() => {
+      lf = fakeClient();
+    });
+
+    it('updates trace metadata with error name and message', () => {
+      const sessionId = 'ses_error_1';
+      handleSessionCreated(sessionCreatedEvent(sessionId), lf);
+
+      const error = { name: 'TestError', data: { message: 'Something went wrong' } };
+      handleSessionError(sessionErrorEvent(sessionId, error), lf);
+
+      const trace = lf.traces[0];
+      expect(trace.metadata.error).toBe('TestError');
+      expect(trace.metadata.errorMessage).toBe('Something went wrong');
+    });
+
+    it('handles missing error fields gracefully', () => {
+      const sessionId = 'ses_error_2';
+      handleSessionCreated(sessionCreatedEvent(sessionId), lf);
+
+      // Error with no data.message
+      const error = { name: 'PartialError' };
+      handleSessionError(sessionErrorEvent(sessionId, error), lf);
+
+      const trace = lf.traces[0];
+      expect(trace.metadata.error).toBe('PartialError');
+      expect(trace.metadata.errorMessage).toBeUndefined();
+    });
+
+    it('is a no-op when sessionID is missing', () => {
+      const event = { type: 'session.error', properties: {} };
+      expect(() => handleSessionError(event, lf)).not.toThrow();
+    });
+
+    it('is a no-op when session not found', () => {
+      const event = sessionErrorEvent('unknown_session', { name: 'Err' });
+      expect(() => handleSessionError(event, lf)).not.toThrow();
+    });
   });
 });
