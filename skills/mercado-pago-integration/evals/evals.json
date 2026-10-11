@@ -1,0 +1,71 @@
+{
+  "skill_name": "mercado-pago-integration",
+  "description": "Evaluation prompts for the Mercado Pago integration skill. 'trigger' cases must activate the skill; 'no_trigger' cases must not. 'quality' cases check that the skill's guidance (decimal amounts, preapproval naming, webhook verification) is applied.",
+  "evals": [
+    {
+      "id": "trigger-01-brazil-checkout",
+      "type": "trigger",
+      "prompt": "I'm building a Next.js app for the Brazilian market and need to add payments with PIX and credit card. What's the best way to do this?",
+      "should_trigger": true,
+      "why": "Brazilian market + PIX + cards + 'add payments' without naming a provider — the description explicitly covers this case."
+    },
+    {
+      "id": "trigger-02-porting-from-stripe",
+      "type": "trigger",
+      "prompt": "We use Stripe today but we're launching in Argentina and want to switch to Mercado Pago. How different is the integration?",
+      "should_trigger": true,
+      "why": "Explicit Mercado Pago + comparison to Stripe."
+    },
+    {
+      "id": "trigger-03-subscription-debug",
+      "type": "trigger",
+      "prompt": "Our recurring billing for Mercado Pago keeps charging users after they cancel in the app. Webhooks look fine. Where should I look?",
+      "should_trigger": true,
+      "why": "Mercado Pago subscriptions/preapproval + webhook debugging."
+    },
+    {
+      "id": "no-trigger-01-stripe",
+      "type": "no_trigger",
+      "prompt": "How do I set up a Stripe Checkout session with subscription mode?",
+      "should_trigger": false,
+      "why": "Stripe, not Mercado Pago."
+    },
+    {
+      "id": "no-trigger-02-unrelated",
+      "type": "no_trigger",
+      "prompt": "Refactor this React component to use the new routing hooks.",
+      "should_trigger": false,
+      "why": "Not a payments task."
+    },
+    {
+      "id": "quality-01-decimal-amounts",
+      "type": "quality",
+      "prompt": "Using the Mercado Pago Node SDK, create a Checkout Pro preference for an order totaling R$24.50. Show the code.",
+      "assertions": [
+        "Uses unit_price: 24.5 (decimal), NOT 2450 (cents)",
+        "Includes external_reference and a notification_url",
+        "Directs the buyer to init_point / sandbox_init_point"
+      ]
+    },
+    {
+      "id": "quality-02-pix-pending",
+      "type": "quality",
+      "prompt": "Write the server code to accept a PIX payment in FastAPI with the Mercado Pago Python SDK, and explain how we know when it's actually paid.",
+      "assertions": [
+        "Uses payment_method_id 'pix' via sdk.payment().create(...)",
+        "Reads point_of_interaction.transaction_data.qr_code / qr_code_base64",
+        "Explains that the payment stays pending and is confirmed via webhook + GET /v1/payments/{id}"
+      ]
+    },
+    {
+      "id": "quality-03-webhook-signature",
+      "type": "quality",
+      "prompt": "How do I verify a Mercado Pago webhook signature in Node before trusting the notification?",
+      "assertions": [
+        "Builds the manifest id:<data.id>;request-id:<x-request-id>;ts:<ts>;",
+        "HMAC-SHA256 with the webhook secret, constant-time compare against x-signature v1",
+        "Acks 200/201 then fetches the resource by id instead of trusting the payload"
+      ]
+    }
+  ]
+}
